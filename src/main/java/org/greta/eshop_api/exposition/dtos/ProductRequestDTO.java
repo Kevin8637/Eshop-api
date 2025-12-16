@@ -33,7 +33,7 @@ public record ProductRequestDTO(
         int stock,
 
         @PositiveOrZero(message = "La remise ne peut pas être négative")
-        @Max(value = 90, message = "La remise ne peut pas dépasser 90%")
+        @Max(value = 100, message = "La remise ne peut pas dépasser 90%")
         double discount
 ) {}
 
