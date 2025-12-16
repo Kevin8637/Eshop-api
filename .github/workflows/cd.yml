@@ -44,7 +44,7 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           push: true
-          tags: kevin8637/docker-service:${{ steps.set_tag.outputs.tag }}
+          tags: kevin8637/e-shop-api:${{ steps.set_tag.outputs.tag }}
 
   deploy:
     name: 🚀 Deploy to VPS
