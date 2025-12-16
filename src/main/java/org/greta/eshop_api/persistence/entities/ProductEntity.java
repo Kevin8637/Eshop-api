@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.greta.eshop_api.exposition.dtos.ProductRequestDTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,12 @@ public class ProductEntity extends BaseEntity {
 
     @Column(nullable = false)
     private double discount = 0.0;
+
+    @Column
+    private LocalDate promoStart;
+
+    @Column
+    private LocalDate promoEnd;
 
     @ManyToMany
     @JoinTable (

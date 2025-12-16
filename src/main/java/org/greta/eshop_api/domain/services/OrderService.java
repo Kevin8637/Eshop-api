@@ -37,7 +37,7 @@ public class OrderService {
     @CacheEvict(value = "orders", allEntries = true)
     public OrderResponseDTO create (OrderRequestDTO dto){
         OrderEntity entity = OrderMapper.toEntity(dto);
-        OrderRules.validateOrderStatus(entity);
+        OrderRules.validateOrderStatus(entity.getStatus());
         OrderEntity saved = orderRepository.save(entity);
         return OrderMapper.toDto(saved);
     }
@@ -46,7 +46,7 @@ public class OrderService {
     public OrderResponseDTO update (Long id, OrderRequestDTO dto){
         OrderEntity existing = orderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundExceptions("Commande " + id + " introuvable."));
         existing.updateForm(dto);
-        OrderRules.validateOrderStatus(existing);
+        OrderRules.validateOrderStatus(existing.getStatus());
         OrderEntity saved = orderRepository.save(existing);
         return OrderMapper.toDto(saved);
     }

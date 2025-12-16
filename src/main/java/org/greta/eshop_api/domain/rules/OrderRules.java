@@ -1,6 +1,7 @@
 package org.greta.eshop_api.domain.rules;
 
 import org.greta.eshop_api.exceptions.BadRequestExceptions;
+import org.greta.eshop_api.exposition.dtos.OrderItemRequestDTO;
 import org.greta.eshop_api.persistence.entities.CustomerEntity;
 import org.greta.eshop_api.persistence.entities.OrderEntity;
 import org.greta.eshop_api.persistence.entities.ProductEntity;
@@ -8,23 +9,32 @@ import org.greta.eshop_api.persistence.entities.ProductEntity;
 import java.util.List;
 
 public class OrderRules {
-    private static final List<String> orderStatus = List.of("PENDING", "SHIPPED", "DELIVERED", "CANCELLED");
+    public static void validateProducts(List<ProductEntity> products){
+        if(products.isEmpty())
+            throw new RuntimeException("Aucun produit actif pour cette commande");
+        boolean allInactive = products.stream().noneMatch(ProductEntity::getIsActive);
 
-    public static void validateCustomer(CustomerEntity customer){
+        if(allInactive)
+            throw new RuntimeException("Aucun produit actif dans la commande");
     }
 
-    public static void validateProducts(ProductEntity product){
+    public static void validateStock(OrderItemRequestDTO item, ProductEntity product) {
+        if (item.quantity() > product.getStock()) {
+            throw new RuntimeException("Stock insuffisant pour le produit " + product.getName());
+        }
     }
 
-    public static void validateStock(){
+    public static void validateTotal(double total){
+        double max = 5000.0;
+        if (total > max){
+            throw new RuntimeException("Le montant total de la commande dépasse le plafond autorisé (" + max + "€)");
+        }
     }
 
-    public static void validateTotal(){
-    }
-
-    public static void validateOrderStatus(OrderEntity order){
-        if(!orderStatus.contains(order.getStatus())){
-            throw new BadRequestExceptions("Le status ne correspond pas");
+    public static void validateOrderStatus(String status) {
+        List<String> allowed = List.of("PENDING", "SHIPPED", "DELIVERED", "CANCELLED");
+        if (!allowed.contains(status)) {
+            throw new RuntimeException("Statut de commande invalide : " + status);
         }
     }
 }
